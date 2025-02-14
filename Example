@@ -1,0 +1,36 @@
+{#{{ module.deal.id }} hs.object.id#}
+
+
+
+{# Get the Contact associated to the Deal#}
+{% set associated_contact = crm_associations(module.deal.id, "HUBSPOT_DEFINED", <INSERT ASSOCIATION TYPE ID>, "orderBy=-createdate") %}
+
+{# Get the Line_Items associated to the Deal#}
+{% set associated_line_items = crm_associations(module.deal.id, "HUBSPOT_DEFINED", <INSERT ASSOCIATION TYPE ID>, "orderBy=-createdate") %}
+
+
+<h2 style="font-family:verdana; margin-top:20px; color:#ff6347; margin-left:10px; margin-right:10dp; text-align: center;" > Hello {{associated_contact.results[0].firstname}}, Thank you for Visiting our Store!</h2>  
+
+<p style= "margin-left:10px; margin-right:10dp; text-align: center;" >
+
+We noticed that you haven't completed your order. Here is a little reminder of what you have in your current shopping cart. Feel free to complete your purchase by clicking on the button below. 
+  
+</p>
+
+{# Grab the product of each line item and display the info#}
+{% for item in associated_line_items.results %}
+<p> {{ item }}</p>
+
+{% set product = crm_object("product", item.hs_product_id, "name,price,hs_url", false) %}
+<div  style="text-align:center">
+<img style="width: 20%" src={{product.hs_url}} />
+  <p>
+    {{product.name}}
+   </p>
+  <h4 style="font-family:verdana;">
+    ${{product.price}}
+  </h4> 
+
+</div> 
+
+{% endfor %}
